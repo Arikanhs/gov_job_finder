@@ -1,0 +1,15 @@
+.env
+.venv/
+__pycache__/
+data/
+output/
+materials/
+inbox/
+inbox.md
+jobs.csv
+
+# Safety net: never commit personal documents or OS clutter, wherever they end up.
+*.pdf
+*.docx
+*.doc
+.DS_Store

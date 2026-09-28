@@ -1,0 +1,60 @@
+# gov_jobs settings. Secrets (USAJOBS key/email) live in .env.
+
+inbox: inbox.md
+facts: materials/facts.yaml
+cover_letters: materials/cover_letters
+output: output
+cache_dir: data/cache
+
+# Sources are the files in govjobs/sources/. List any to skip here, e.g. [mitre, sandia].
+disabled_sources: []
+
+http:
+  user_agent: "Mozilla/5.0 (compatible; gov-jobs-personal/0.1; personal job search, low volume)"
+  min_interval_seconds: 3     # per-site delay; robots.txt crawl-delay wins if larger
+  timeout_seconds: 30
+  cache_ttl_hours:
+    listing: 6                # search results / sitemaps
+    detail: 168               # individual postings (7 days)
+
+# Which lab titles count as internships (case-insensitive regex).
+title_filter:
+  include: '\b(intern|interns|internships?|students?|co-?op|fellowships?|summer|SULI|research aide|graduate research assistant|graduate appointee|research associate graduate)\b'
+  # Drops postdocs, high-school/community-college programs, and full-time new-grad hires ("2027 BS/MS Graduate - ...").
+  exclude: '\b(postdoc|postdoctoral|post-?doc|post-?doctora\w*|high school|community college|faculty|visiting scholar|skillbridge|(BS/MS|MS|BS|PhD)\s+graduate|^\d{4}\s*-?\s*graduate)\b'
+
+usajobs:
+  # Keyword search is full-text and does NOT support OR: one keyword per query.
+  # "information technology" matches boilerplate in almost every posting, so it's left out.
+  defaults:
+    HiringPath: student     # Pathways/student internships only
+    Fields: Full
+  queries:
+    - JobCategoryCode: "2210;1550;0854;1301"
+    - Keyword: cybersecurity
+    - Keyword: computer science
+    - Keyword: computer engineering
+    - Keyword: data science
+    - Keyword: machine learning
+    - Keyword: artificial intelligence
+
+# Ranking: weight -> keywords. A keyword counts once per job; x3 if it's in the title.
+rank:
+  keywords:
+    5: [adversarial, anomaly detection, AI security, ML security, trustworthy AI, AI assurance, cyber defense]
+    4: [machine learning, artificial intelligence, AI, AI/ML, deep learning, LLM, neural network,
+        cybersecurity, cyber security, high performance computing, HPC, parallel computing]
+    2: [data science, computer science, reverse engineer, vulnerability, malware, forensics, cyber,
+        security, GPU, CUDA, PyTorch, Python, algorithm, research]
+
+letters:
+  model: gemma4:12b
+  ollama_url: http://localhost:11434
+  # Your recent letters used as voice examples; the closest one to each posting is used.
+  style_examples:
+    - Hasan_Arikan_Cover_Letter_LANL_CSRP.pdf
+    - Hasan_Arikan_Cover_Letter_CyberFire_2027.pdf
+    - Hasan_Arikan_Cover_Letter_NLR_AI.pdf
+    - Hasan_Arikan_Cover_Letter_NLR_LLM.pdf
+    - Hasan_Arikan_Cover_Letter_NLR_Autonomous_Lab.pdf
+    - Hasan_Arikan_Cover_Letter_NLR_Geospatial.pdf

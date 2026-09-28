@@ -1,0 +1,6 @@
+requests
+pyyaml
+python-dotenv
+beautifulsoup4
+pypdf
+python-docx
